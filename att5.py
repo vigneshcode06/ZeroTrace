@@ -45,11 +45,13 @@ def main():
         print("\n" + "-" * 50)
         print(f"{BOLD}{YELLOW}Available Commands:{RESET}")
         print(f"    {GREEN}[1]{RESET} Play a video (provide full path)")
-        print(f"    {GREEN}[2]{RESET} Stop all hacks")
-        print(f"    {GREEN}[3]{RESET} Shutdown target PC")
-        print(f"    {GREEN}[4]{RESET} LOL (Notepad spam)")
-        print(f"    {GREEN}[5]{RESET} CLI Hack (CMD spam with tree command)")
-        print(f"    {GREEN}[6]{RESET} Exit")
+        print(f"    {GREEN}[2]{RESET} Crazy Brightness (Screen+)")
+        print(f"    {GREEN}[3]{RESET} Stop all hacks")
+        print(f"    {GREEN}[4]{RESET} Shutdown target PC")
+        print(f"    {GREEN}[5]{RESET} LOL (Notepad spam)")
+        print(f"    {GREEN}[6]{RESET} CLI Hack (CMD spam with tree command)")
+        print(f"    {GREEN}[7]{RESET} Flash Screen (Glitchy effect)")
+        print(f"    {GREEN}[8]{RESET} Exit")
         print("-" * 50)
 
         choice = input(f"{BOLD}{CYAN}Enter choice:{RESET} ").strip()
@@ -59,21 +61,29 @@ def main():
             send_command(target_ip, f"play {video_path}")
 
         elif choice == "2":
-            send_command(target_ip, "stopall")
+            send_command(target_ip, "crazybrightness")
+            print(f"{GREEN}[+] Crazy Brightness activated!{RESET}")
 
         elif choice == "3":
+            send_command(target_ip, "stopall")
+
+        elif choice == "4":
             send_command(target_ip, "shutdown")
             print(f"{GREEN}[+] Shutdown command sent.{RESET}")
 
-        elif choice == "4":
+        elif choice == "5":
             send_command(target_ip, "lol")
             print(f"{GREEN}[+] LOL command sent!{RESET}")
 
-        elif choice == "5":
+        elif choice == "6":
             send_command(target_ip, "clihack")
             print(f"{GREEN}[+] CLI Hack activated!{RESET}")
 
-        elif choice == "6":
+        elif choice == "7":
+            send_command(target_ip, "flashscreen")
+            print(f"{GREEN}[+] Flash Screen activated!{RESET}")
+
+        elif choice == "8":
             print(f"{GREEN}[+] Exiting...{RESET}")
             break
 
