@@ -1,8 +1,8 @@
-readme_content = """# 🖥️ ZeroTrace - The Ultimate CMD Prank Tool  
+
 
 ![ZeroTrace](https://img.shields.io/badge/Status-Complete-brightgreen)  
 ![Python](https://img.shields.io/badge/Made%20With-Python-blue)  
-![License](https://img.shields.io/badge/License-MIT-orange)  
+
 
 ## 👾 What is ZeroTrace?  
 ZeroTrace is a **fun and stealthy remote prank tool** that lets you control a **Windows laptop remotely** via a Termux-based attacker script. You can execute **hilarious and chaotic commands** like:  
