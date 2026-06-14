@@ -1,6 +1,4 @@
 
-
-![ZeroTrace](https://img.shields.io/badge/Status-Complete-brightgreen)  
 ![Python](https://img.shields.io/badge/Made%20With-Python-blue)  
 
 
